@@ -246,8 +246,8 @@ const chartOptions = computed((): ChartOptions<'line'> => ({
           enabled: true
         },
         mode: 'xy',
-        onZoomComplete: ({ chart }) => {
-          // Optional: Add zoom completion callback
+        onZoomComplete: () => {
+       
         }
       },
       pan: {

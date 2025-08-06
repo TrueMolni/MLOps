@@ -7,7 +7,7 @@
           <span>Metrics</span>
           <Badge :value="availableMetrics.length" severity="info" />
         </div>
-        
+
         <div class="flex gap-2">
           <Button
             v-if="selectedMetrics.size > 0"
@@ -19,7 +19,10 @@
             @click="clearSelection"
           />
           <Button
-            v-if="availableMetrics.length > 0 && selectedMetrics.size < availableMetrics.length"
+            v-if="
+              availableMetrics.length > 0 &&
+              selectedMetrics.size < availableMetrics.length
+            "
             label="Select All"
             icon="pi pi-check"
             outlined
@@ -33,7 +36,9 @@
     <template #content>
       <div v-if="availableMetrics.length === 0" class="text-center py-4">
         <i class="pi pi-chart-bar text-400 text-4xl mb-3"></i>
-        <p class="text-600 mb-0">No metrics available for selected experiments.</p>
+        <p class="text-600 mb-0">
+          No metrics available for selected experiments.
+        </p>
       </div>
 
       <div v-else>
@@ -42,8 +47,10 @@
           <Message severity="success" :closable="false">
             <div class="flex align-items-center justify-content-between">
               <span>
-                <strong>{{ selectedMetrics.size }}</strong> metric{{ selectedMetrics.size !== 1 ? 's' : '' }} selected
-                for visualization
+                <strong>{{ selectedMetrics.size }}</strong> metric{{
+                  selectedMetrics.size !== 1 ? "s" : ""
+                }}
+                selected for visualization
               </span>
               <Button
                 label="Export Data"
@@ -97,26 +104,35 @@
               <div class="metric-info">
                 <h5 class="metric-name">{{ metric }}</h5>
                 <p class="metric-stats">
-                  Available in {{ getMetricExperimentCount(metric) }} experiment{{ getMetricExperimentCount(metric) !== 1 ? 's' : '' }}
+                  Available in
+                  {{ getMetricExperimentCount(metric) }} experiment{{
+                    getMetricExperimentCount(metric) !== 1 ? "s" : ""
+                  }}
                   • {{ getMetricDataPointCount(metric) }} data points
                 </p>
               </div>
             </div>
-            
+
             <!-- Metric Preview -->
             <div v-if="selectedMetrics.has(metric)" class="metric-preview">
               <div class="preview-stats">
                 <div class="stat-item">
                   <span class="stat-label">Min</span>
-                  <span class="stat-value">{{ getMetricStats(metric).min }}</span>
+                  <span class="stat-value">{{
+                    getMetricStats(metric).min
+                  }}</span>
                 </div>
                 <div class="stat-item">
                   <span class="stat-label">Max</span>
-                  <span class="stat-value">{{ getMetricStats(metric).max }}</span>
+                  <span class="stat-value">{{
+                    getMetricStats(metric).max
+                  }}</span>
                 </div>
                 <div class="stat-item">
                   <span class="stat-label">Avg</span>
-                  <span class="stat-value">{{ getMetricStats(metric).avg }}</span>
+                  <span class="stat-value">{{
+                    getMetricStats(metric).avg
+                  }}</span>
                 </div>
               </div>
             </div>
@@ -133,99 +149,107 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
-import { useToast } from 'primevue/usetoast'
-import Card from 'primevue/card'
-import Button from 'primevue/button'
-import Badge from 'primevue/badge'
-import Message from 'primevue/message'
-import InputText from 'primevue/inputtext'
-import Checkbox from 'primevue/checkbox'
-import { useExperimentStore } from '@/store/experimentStore'
+import { computed } from "vue";
+import { useToast } from "primevue/usetoast";
+import Card from "primevue/card";
+import Button from "primevue/button";
+import Badge from "primevue/badge";
+import Message from "primevue/message";
+import InputText from "primevue/inputtext";
+import Checkbox from "primevue/checkbox";
+import { useExperimentStore } from "@/store/experimentStore";
 
-const toast = useToast()
-const experimentStore = useExperimentStore()
+const toast = useToast();
+const experimentStore = useExperimentStore();
 
-const selectedExperimentIds = computed(() => experimentStore.selectedExperimentIds)
-const selectedMetrics = computed(() => experimentStore.selectedMetrics)
-const availableMetrics = computed(() => experimentStore.availableMetricsForSelection)
-const filteredMetrics = computed(() => experimentStore.filteredMetrics)
-const metricFilter = computed(() => experimentStore.metricFilter)
+const selectedExperimentIds = computed(
+  () => experimentStore.selectedExperimentIds
+);
+const selectedMetrics = computed(() => experimentStore.selectedMetrics);
+const availableMetrics = computed(
+  () => experimentStore.availableMetricsForSelection
+);
+const filteredMetrics = computed(() => experimentStore.filteredMetrics);
+const metricFilter = computed(() => experimentStore.metricFilter);
 
 function toggleMetric(metricName: string) {
-  experimentStore.toggleMetric(metricName)
+  experimentStore.toggleMetric(metricName);
 }
 
 function selectAll() {
-  experimentStore.selectAllMetrics()
+  experimentStore.selectAllMetrics();
 }
 
 function clearSelection() {
-  experimentStore.clearMetricSelection()
+  experimentStore.clearMetricSelection();
 }
 
-function setFilter(value: string) {
-  experimentStore.setMetricFilter(value)
+function setFilter(value: string | undefined) {
+  experimentStore.setMetricFilter(value ?? "");
 }
 
 function clearFilter() {
-  experimentStore.setMetricFilter('')
+  experimentStore.setMetricFilter("");
 }
 
 function exportData() {
-  const success = experimentStore.exportSelectedData()
-  
+  const success = experimentStore.exportSelectedData();
+
   if (success) {
     toast.add({
-      severity: 'success',
-      summary: 'Data Exported',
-      detail: 'CSV file has been downloaded',
-      life: 3000
-    })
+      severity: "success",
+      summary: "Data Exported",
+      detail: "CSV file has been downloaded",
+      life: 3000,
+    });
   } else {
     toast.add({
-      severity: 'warn',
-      summary: 'No Data to Export',
-      detail: 'Please select experiments and metrics first',
-      life: 3000
-    })
+      severity: "warn",
+      summary: "No Data to Export",
+      detail: "Please select experiments and metrics first",
+      life: 3000,
+    });
   }
 }
 
 function getMetricExperimentCount(metricName: string): number {
-  return experimentStore.selectedExperiments
-    .filter(exp => exp.metrics.has(metricName)).length
+  return experimentStore.selectedExperiments.filter((exp) =>
+    exp.metrics.has(metricName)
+  ).length;
 }
 
 function getMetricDataPointCount(metricName: string): number {
-  return experimentStore.selectedExperiments
-    .reduce((total, exp) => {
-      return total + exp.data.filter(d => d.metric_name === metricName).length
-    }, 0)
+  return experimentStore.selectedExperiments.reduce((total, exp) => {
+    return total + exp.data.filter((d) => d.metric_name === metricName).length;
+  }, 0);
 }
 
-function getMetricStats(metricName: string): { min: string; max: string; avg: string } {
-  const values: number[] = []
-  
-  experimentStore.selectedExperiments.forEach(exp => {
+function getMetricStats(metricName: string): {
+  min: string;
+  max: string;
+  avg: string;
+} {
+  const values: number[] = [];
+
+  experimentStore.selectedExperiments.forEach((exp) => {
     exp.data
-      .filter(d => d.metric_name === metricName)
-      .forEach(d => values.push(d.value))
-  })
-  
+      .filter((d) => d.metric_name === metricName)
+      .forEach((d) => values.push(d.value));
+  });
+
   if (values.length === 0) {
-    return { min: 'N/A', max: 'N/A', avg: 'N/A' }
+    return { min: "N/A", max: "N/A", avg: "N/A" };
   }
-  
-  const min = Math.min(...values)
-  const max = Math.max(...values)
-  const avg = values.reduce((sum, val) => sum + val, 0) / values.length
-  
+
+  const min = Math.min(...values);
+  const max = Math.max(...values);
+  const avg = values.reduce((sum, val) => sum + val, 0) / values.length;
+
   return {
     min: min.toFixed(4),
     max: max.toFixed(4),
-    avg: avg.toFixed(4)
-  }
+    avg: avg.toFixed(4),
+  };
 }
 </script>
 
@@ -316,7 +340,7 @@ function getMetricStats(metricName: string): { min: string; max: string; avg: st
     flex-direction: column;
     gap: 0.5rem;
   }
-  
+
   .preview-stats {
     grid-template-columns: repeat(3, 1fr);
     gap: 0.5rem;

@@ -1,0 +1,1 @@
+{"root":["./src/main.ts","./src/vite-env.d.ts","./src/store/experimentstore.ts","./src/types/experiment.ts","./src/utils/csvparser.ts","./src/app.vue","./src/components/chartdisplay.vue","./src/components/experimentlist.vue","./src/components/fileupload.vue","./src/components/helloworld.vue","./src/components/metricselector.vue"],"version":"5.9.2"}
